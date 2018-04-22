@@ -1,17 +1,19 @@
-require './Reservation.rb'
+require './reservation.rb'
+require './visitor.rb'
+require './klient.rb'
+reservation1 = Reservation.new(Time.now, Time.now, 1, [], 1)
+reservation2 = Reservation.new(Time.now, Time.now, 1, [], 1)
 
-dateFrom = Time.new
-dateTo = Time.new(2019, 11, 1)
-reservation1 = Reservation.new(dateFrom, dateTo,  120, ['wolny', 'spatany'])
-reservation2 = Reservation.new(dateFrom, dateTo,  120, ['zajenty'], 3)
-Reservation.writeReservations('what.bin')
-Reservation.showExtention
-Reservation.removeReservation(reservation1)
-Reservation.removeReservation(reservation2)
-Reservation.showExtention
-Reservation.readReservations('what.bin')
-Reservation.showExtention
+visitor1 = Visitor.new('n', 's', 1)
+visitor1 = Visitor.new('n', 's', 2)
 
-puts Reservation.priceOfAllRevervations
-res = Reservation.getExtention[0]
-puts res.getStatus
+klient1 = Klient.new('n', 's', 4)
+klient2 = Klient.new('n', 's', 3)
+
+reservation1.setKlient(klient1)
+reservation2.setKlient(klient2)
+
+reservation1.addVisitor(visitor1)
+reservation1.addVisitor(visitor1)
+
+puts reservation1.getVisitors

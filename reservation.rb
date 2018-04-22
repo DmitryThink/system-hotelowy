@@ -1,14 +1,66 @@
 class Reservation
-  @@numberOfReservations = 0
+  @@maxNumberOfReservations = 15
   @@extension = []
 
-  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = 0)
+
+  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = nil)
+    if(@@maxNumberOfReservations == @@extension)
+      throw "Can't be more than " + @@maxNumberOfReservations + " reservations!"
+    end
+    if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil?)
+      throw "Can't be nil!"
+    end
     @dateFrom = dateFrom
     @dateTo = dateTo
     @priceOfRoom = priceOfRoom
     @priceOfService = priceOfService
     @status = status
-    Reservation.addReservation(self)
+    @klient = nil
+    @visitors = Hash.new
+    Reservation.add(self)
+  end
+
+  def addVisitor(visitor)
+    if visitor.nil?
+      throw "Visitor can't be nil!"
+    end
+    unless @visitors.include?(visitor.getPhone)
+      @visitors[visitor.getPhone] = visitor
+      visitor.addReservation(self)
+    end
+  end
+
+  def removeVisitor(visitor)
+    if visitor.nil?
+      throw "Visitor can't be nil!"
+    end
+    unless @visitors.include?(visitor.getPhone)
+      @visitors.delete(visitor)
+      visitor.removeReservation(self)
+    end
+  end
+
+  def getVisitors
+    @visitors
+  end
+
+  def setKlient(klient)
+    if klient.nil?
+      throw 'Klient can\'t be nil!'
+    end
+    unless @klient.equal? klient
+      @klient = klient
+      klient.addReservation(self)
+    end
+  end
+
+  def removeKlient
+    @klient = nil
+    klient.removeReservation(self)
+  end
+
+  def getKlient
+    @klient
   end
 
   #Przesłanianie metod
@@ -20,7 +72,7 @@ class Reservation
 
   #Ekst. - trwałość
   ###############################################################################################################################################
-  def self.writeReservations(filename)
+  def self.write(filename)
     File.open(filename, 'w') do |f|
       f.puts(@@extension.length)
       @@extension.each do |reservation|
@@ -36,7 +88,7 @@ class Reservation
     end
   end
 
-  def self.readReservations(filename)
+  def self.read(filename)
     File.open(filename, 'r') do |f|
       countOfReservations = Integer(f.gets)
       @@extension.clear
@@ -61,13 +113,11 @@ class Reservation
     @@extension
   end
 
-  def self.addReservation(reservation)
-    @@numberOfReservations += 1
+  def self.add(reservation)
     @@extension << reservation
   end
 
-  def self.removeReservation(reservation)
-    @@numberOfReservations -= 1
+  def self.remove(reservation)
     @@extension.delete(reservation)
   end
 
@@ -83,7 +133,11 @@ class Reservation
   #Atrybut pochodny
   ###############################################################################################################################################
   def getTotalPrice
-    @totalprice = @priceOfRoom + @priceOfService
+    if(@priceOfService.nil?)
+      @totalprice = @priceOfRoom
+    else
+      @totalprice = @priceOfRoom + @priceOfService
+    end
   end
 
   #Metoda klasowa
