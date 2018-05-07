@@ -11,6 +11,7 @@ class Visitor < Osoba
     Klient.add(self)
   end
 
+  #Kwalifikowana###############
   def addReservation(reservation)
     if reservation.nil?
       throw "Reservation can't be nil!"
@@ -31,6 +32,9 @@ class Visitor < Osoba
     end
   end
 
+  def to_s
+    'Visitor: name = ' + @name + ' surname  = ' + @surname + ' phone = ' + @phone.to_s
+  end
 
   def getPhone
     @phone

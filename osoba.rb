@@ -3,7 +3,8 @@ class Osoba
   @surname
   @phone
   @address
+
   def initialize
-    throw "Osoba is abstract!"
+    #throw "Osoba is abstract!"
   end
 end

@@ -14,13 +14,17 @@ class Klient < Osoba
     Klient.add(self)
   end
 
+  def to_s
+    'Klient: name = ' + @name + ' surname = ' + @surname
+  end
+
+  #Binarna##############
   def addReservation(reservation)
     if reservation.nil?
       throw 'Reservation can\'t be nil!'
     end
     unless @reservations.include? reservation
       @reservations << reservation
-      reservation.setKlient(self)
     end
   end
 

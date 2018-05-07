@@ -2,12 +2,11 @@ class Reservation
   @@maxNumberOfReservations = 15
   @@extension = []
 
-
-  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = nil)
+  def initialize(dateFrom, dateTo, priceOfRoom, status, klient, priceOfService = nil)
     if(@@maxNumberOfReservations == @@extension)
       throw "Can't be more than " + @@maxNumberOfReservations + " reservations!"
     end
-    if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil?)
+    if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil? || klient.nil?)
       throw "Can't be nil!"
     end
     @dateFrom = dateFrom
@@ -15,11 +14,54 @@ class Reservation
     @priceOfRoom = priceOfRoom
     @priceOfService = priceOfService
     @status = status
-    @klient = nil
+    @klient = klient
     @visitors = Hash.new
+    @reservation_rooms = []
+    @orders = []
     Reservation.add(self)
   end
 
+  #Kompozycja############
+  def addOrder(order)
+    if order.nil?
+      throw "Order can't be nil!"
+    end
+    unless @orders.include? order
+      @orders << order
+    end
+  end
+
+  def removeOrder(order)
+    if order.nil?
+      throw "Order can't be nil!"
+    end
+    unless @orders.include? order
+      @orders.remove(order)
+    end
+  end
+
+  #Z atrybut#############
+  def addReservationRoom(reservation_room)
+    if reservation_room.nil?
+      throw "ReservationRoom can't be nil!"
+    end
+    unless @reservation_rooms.include?(reservation_room)
+      @reservation_rooms << reservation_room
+      reservation_room.setReservation(self)
+    end
+  end
+
+  def removeReservationRoom(reservation_room)
+    if reservation_room.nil?
+      throw "ReservationRoom can't be nil!"
+    end
+    unless @reservation_rooms.include?(reservation_room)
+      @reservation_rooms.remove(reservation_room)
+      reservation_room.removeReservation(reservation_room)
+    end
+  end
+
+  #Kwalifikowana###############
   def addVisitor(visitor)
     if visitor.nil?
       throw "Visitor can't be nil!"
@@ -44,18 +86,18 @@ class Reservation
     @visitors
   end
 
+
+  #Binarna##############
   def setKlient(klient)
     if klient.nil?
       throw 'Klient can\'t be nil!'
     end
-    unless @klient.equal? klient
-      @klient = klient
-      klient.addReservation(self)
-    end
+    @klient = klient
+    klient.removeReservation(self)
+    klient.addReservation(self)
   end
 
   def removeKlient
-    @klient = nil
     klient.removeReservation(self)
   end
 
@@ -66,7 +108,17 @@ class Reservation
   #Przesłanianie metod
   ###############################################################################################################################################
   def to_s
-    'Rezerwacja:''  z daty - ' + @dateFrom.to_s[0..9] + '  do daty - ' + @dateTo.to_s[0..9] + '  cena rezerwacji ' + getTotalPrice.to_s
+    puts 'Rezerwacja:''  z daty - ' + @dateFrom.to_s[0..9] + '  do daty - ' + @dateTo.to_s[0..9] + '  cena rezerwacji '
+    puts '  List of orders:'
+    @orders.each do |order|
+      puts '    ' + order.to_s
+    end
+    puts '  List of visitors:'
+    @visitors.each do |visitor, v|
+      puts '    ' + v.to_s
+    end
+    puts '  ' + @klient.to_s
+    ' '
   end
   ###############################################################################################################################################
 
