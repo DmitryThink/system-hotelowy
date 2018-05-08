@@ -11,6 +11,10 @@ class Visitor < Osoba
     Klient.add(self)
   end
 
+  def getInfo
+    @name + ' ' + @surname
+  end
+
   #Kwalifikowana###############
   def addReservation(reservation)
     if reservation.nil?

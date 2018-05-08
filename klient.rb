@@ -3,7 +3,6 @@ require './osoba.rb'
 class Klient < Osoba
   @@extension = []
 
-
   def initialize(name, surname, phone, address = nil, email = nil)
     @name = name
     @surname = name
@@ -12,6 +11,10 @@ class Klient < Osoba
     @email = email
     @reservations = []
     Klient.add(self)
+  end
+
+  def getInfo
+    @name + ' ' + @surname + ' ' + @phone
   end
 
   def to_s

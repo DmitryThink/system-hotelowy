@@ -5,6 +5,7 @@ require './reservation_room.rb'
 require './room.rb'
 require './Order.rb'
 require './osoba.rb'
+require './worker.rb'
 
 
-os = Osoba.new
+w = Worker.new('Bill', 'Clinton', '1')
