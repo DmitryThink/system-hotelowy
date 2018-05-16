@@ -1,4 +1,5 @@
 class Osoba
+  #Klasa abstrakcyjna
   @name
   @surname
   @phone

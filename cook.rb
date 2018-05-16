@@ -2,8 +2,11 @@ require './worker.rb'
 class Cook
 
   @salary = 20
-
+  #Overlapping
   def initialize(worker, email)
+    if(!@worker.nil?)
+      @worker.deleteMaid
+    end
     @worker = worker
     @email = email
   end
@@ -16,7 +19,7 @@ class Cook
     worker.addCook(cook)
     cook
   end
-
+  #Overlapping
   def deleteWorker
     @worker = nil
   end
@@ -27,5 +30,13 @@ class Cook
 
   def getEmail
     @email
+  end
+
+  def getName
+    @worker.getName
+  end
+
+  def getSurname
+    @worker.getSurname
   end
 end

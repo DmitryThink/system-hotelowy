@@ -11,6 +11,7 @@ class Visitor < Osoba
     Klient.add(self)
   end
 
+  #Klasa abstrakcyjna
   def getInfo
     @name + ' ' + @surname
   end

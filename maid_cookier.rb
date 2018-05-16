@@ -4,17 +4,20 @@ require './maid.rb'
 
 class MaidCookier < Cook
   include IMaid
-
+  #Wielodziedziczen
   @salary = 40
-  def initialize(worker, name, surname, tel, email)
-    @name = name
-    @surname = surname
-    @tel = tel
-    @maid = Maid.new(worker, email)
+
+  def initialize(worker, tel, email)
+    if(!@worker.nil?)
+      @worker.deleteMaid
+    end
+    @worker = worker
+    @email = email
+    @maid = Maid.new(worker, tel)
   end
 
   def getSalary
-    40
+    @salary
   end
 
   def getEmail
@@ -26,6 +29,6 @@ class MaidCookier < Cook
   end
 
   def getEmailAndTel
-    @email + ' ' + @tel
+    @email + ' ' + @maid.getTel
   end
 end
