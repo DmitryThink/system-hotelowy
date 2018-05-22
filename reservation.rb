@@ -2,22 +2,23 @@ class Reservation
   @@maxNumberOfReservations = 15
   @@extension = []
 
-  def initialize(dateFrom, dateTo, priceOfRoom, status, klient, priceOfService = nil)
+  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = nil)
     if(@@maxNumberOfReservations == @@extension)
       throw "Can't be more than " + @@maxNumberOfReservations + " reservations!"
     end
-    if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil? || klient.nil?)
+    if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil?)
       throw "Can't be nil!"
     end
     @dateFrom = dateFrom
     @dateTo = dateTo
-    @priceOfRoom = priceOfRoom
+    setPriceOfRoom(priceOfRoom)
     @priceOfService = priceOfService
     @status = status
-    @klient = klient
     @visitors = Hash.new
     @reservation_rooms = []
     @orders = []
+    @vip = false
+    @listOfAdditionalServices = []
     Reservation.add(self)
   end
 
@@ -25,6 +26,9 @@ class Reservation
   def addOrder(order)
     if order.nil?
       throw "Order can't be nil!"
+    end
+    if @orders.length >= @visitors.length*2
+      throw 'Orders can\'t be more than 2x od amount of Visitors'
     end
     unless @orders.include? order
       @orders << order
@@ -66,6 +70,9 @@ class Reservation
     if visitor.nil?
       throw "Visitor can't be nil!"
     end
+    if !@klient.nil?
+      throw "Visitor can't be add if klient is set"
+    end
     unless @visitors.include?(visitor.getPhone)
       @visitors[visitor.getPhone] = visitor
       visitor.addReservation(self)
@@ -92,13 +99,15 @@ class Reservation
     if klient.nil?
       throw 'Klient can\'t be nil!'
     end
+    if @visitors.length > 0
+      throw 'Klient can\'t be set if reservation has visitors'
+    end
     @klient = klient
-    klient.removeReservation(self)
     klient.addReservation(self)
   end
 
   def removeKlient
-    klient.removeReservation(self)
+    @klient.removeReservation(self)
   end
 
   def getKlient
@@ -109,16 +118,6 @@ class Reservation
   ###############################################################################################################################################
   def to_s
     puts 'Rezerwacja:''  z daty - ' + @dateFrom.to_s[0..9] + '  do daty - ' + @dateTo.to_s[0..9] + '  cena rezerwacji '
-    puts '  List of orders:'
-    @orders.each do |order|
-      puts '    ' + order.to_s
-    end
-    puts '  List of visitors:'
-    @visitors.each do |visitor, v|
-      puts '    ' + v.to_s
-    end
-    puts '  ' + @klient.to_s
-    ' '
   end
   ###############################################################################################################################################
 
@@ -151,8 +150,8 @@ class Reservation
         dateTo = Time.new(dateFromTo[0],dateFromTo[1],dateFromTo[2])
         priceOfRoom = Integer(f.gets)
         status = f.gets.split(' ')
-        priceofService = Integer(f.gets)
-        Reservation.new(dateFrom, dateTo, priceOfRoom, status, priceofService)
+        priceOfService = Integer(f.gets)
+        Reservation.new(dateFrom, dateTo, priceOfRoom, status, priceOfService)
         countOfReservations = countOfReservations - 1
       end
     end
@@ -167,6 +166,7 @@ class Reservation
 
   def self.add(reservation)
     @@extension << reservation
+    @@extension = @@extension.sort_by{|reservation| reservation.getDateTo }
   end
 
   def self.remove(reservation)
@@ -207,7 +207,7 @@ class Reservation
   def getDateFrom
     @dateFrom
   end
-  def serDateFrom(dateFrom)
+  def setDateFrom(dateFrom)
     @dateFrom = dateFrom
   end
   ###############################################################################################################################################
@@ -225,7 +225,13 @@ class Reservation
   def getPriceOfRoom
     @priceOfRoom
   end
+
   def setPriceOfRoom(priceOfRoom)
+    ##### Ograniczenie atrybutu
+    if priceOfRoom > 9999
+      throw "Price of room can't be more than 9999!"
+    end
+
     @priceOfRoom = priceOfRoom
   end
   ###############################################################################################################################################
@@ -253,5 +259,14 @@ class Reservation
     @status = status
   end
   ###############################################################################################################################################
+  def setVip
+    @vip = true
+    setPriceOfRoom(@priceOfRoom*1.2)
+    @listOfAdditionalServices << "Meals to room"
+  end
+
+  def getListOfAdditionalServices
+    @listOfAdditionalServices
+  end
 end
 

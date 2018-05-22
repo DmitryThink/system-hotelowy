@@ -17,7 +17,6 @@ class ReservationRoom
     @reservation
   end
 
-  private
   #Z atrybut#############
   def setReservation(reservation)
     if reservation.nil?

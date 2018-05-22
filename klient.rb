@@ -1,17 +1,25 @@
 require './osoba.rb'
+require 'set.rb'
 
 class Klient < Osoba
   @@extension = []
-
+  @@phones = Set.new
+  @@connections = ['make', 'has']
 
   def initialize(name, surname, phone, address = nil, email = nil)
     @name = name
     @surname = name
-    @phone = phone
+    setPhone(phone)
     @address = address
     @email = email
     @reservations = []
+    @reserv_reservations
     Klient.add(self)
+  end
+
+  #Klasa abstrakcyjna
+  def getInfo
+    @name + ' ' + @surname + ' ' + @phone
   end
 
   def to_s
@@ -25,6 +33,17 @@ class Klient < Osoba
     end
     unless @reservations.include? reservation
       @reservations << reservation
+    end
+  end
+
+  def beVip(reservation)
+    if reservation.nil?
+      throw 'Reservation can\'t be nil!'
+    end
+    if @reservations.include? reservation
+      reservation.setVip
+    else
+      throw "For being Vip you need to have connetion with this reservation!"
     end
   end
 
@@ -53,5 +72,20 @@ class Klient < Osoba
       puts klient.to_s + ' '
     end
     puts
+  end
+
+  def setPhone(phone)
+    if !@@phones.include?(phone)
+      @phone = phone
+      @@phones.add(phone)
+    else
+      throw "Some client already has this phone! Try again."
+    end
+  end
+
+  def hasConnections?(connection, object)
+    if !@@connections.include?(connection)
+      throw "Connection is not exists!"
+    end
   end
 end

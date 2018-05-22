@@ -11,6 +11,11 @@ class Visitor < Osoba
     Klient.add(self)
   end
 
+  #Klasa abstrakcyjna
+  def getInfo
+    @name + ' ' + @surname
+  end
+
   #Kwalifikowana###############
   def addReservation(reservation)
     if reservation.nil?
