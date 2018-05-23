@@ -1,10 +1,10 @@
 class Reservation
-  @@maxNumberOfReservations = 15
+  @@maxNumberOfReservations = 5
   @@extension = []
 
   def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = nil)
-    if(@@maxNumberOfReservations == @@extension)
-      throw "Can't be more than " + @@maxNumberOfReservations + " reservations!"
+    if(@@maxNumberOfReservations < @@extension.length)
+      throw "Can't be more than " + @@maxNumberOfReservations.to_s + " reservations!"
     end
     if(dateFrom.nil? || dateTo.nil? || priceOfRoom.nil? || status.nil?)
       throw "Can't be nil!"
@@ -117,7 +117,7 @@ class Reservation
   #Przesłanianie metod
   ###############################################################################################################################################
   def to_s
-    puts 'Rezerwacja:''  z daty - ' + @dateFrom.to_s[0..9] + '  do daty - ' + @dateTo.to_s[0..9] + '  cena rezerwacji '
+    puts 'Rezerwacja:''  z daty - ' + @dateFrom.to_s[0..9] + '  do daty - ' + @dateTo.to_s[0..9] + '  cena rezerwacji ' + @priceOfRoom.to_s
   end
   ###############################################################################################################################################
 
@@ -259,7 +259,12 @@ class Reservation
     @status = status
   end
   ###############################################################################################################################################
-  def setVip
+  def setVip(klient)
+    if !@klient.equal?(klient) && @vip
+      klient.beVip(self)
+    elsif @vip
+      throw "Klient already has Vip status!"
+    end
     @vip = true
     setPriceOfRoom(@priceOfRoom*1.2)
     @listOfAdditionalServices << "Meals to room"

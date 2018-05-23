@@ -41,7 +41,7 @@ class Klient < Osoba
       throw 'Reservation can\'t be nil!'
     end
     if @reservations.include? reservation
-      reservation.setVip
+      reservation.setVip(self)
     else
       throw "For being Vip you need to have connetion with this reservation!"
     end

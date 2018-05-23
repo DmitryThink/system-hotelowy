@@ -22,11 +22,14 @@ anna = Klient.new("Anna", "Partinson", "1235")
 #anna = Klient.new("Anna", "Partinson", "1234")
 
 #Subset
+# Klient -> make -> reservation
+# Klient -> beVip -> reservation ^subset
 bill = Klient.new("Bill", "Clinton", "124")
 reservation = Reservation.new(Time.new, Time.new, 123, ['wolne'], bill)
 reservation.setKlient(bill)
 bill.beVip(reservation)
-#klient.beVip(reservation) can't be
+#reservation.setVip(klient)
+#klient.beVip(reservation) #can't be
 puts reservation.getListOfAdditionalServices.to_s
 
 #Ordered
@@ -35,6 +38,8 @@ reservation.setKlient(klient)
 puts Reservation.getExtention
 
 #Bag
+# ROOM (1) <-> (*) RESERVATION_ROOM (*) <-> (1) RESERVATION
+reservation = Reservation.new(Time.new, Time.new(2017,2,2), 123, ['wolne'])
 room = Room.new(1,2,123,'wolne')
 reservation_room = ReservationRoom.new(123, room, reservation)
 
@@ -45,13 +50,17 @@ reservation = Reservation.new(Time.new, Time.new(2017,2,2), 123, ['wolne'])
 reservation.setKlient(klient)
 #reservation.addVisitor(visitor)
 
-#Ograniczenie Własne (Orders can't be more than 2x od amount of Visitors)
+#Ograniczenie Własne (Orders can't be more than 2x od amount of Visitors) #dynam
 reservation = Reservation.new(Time.new, Time.new(2017,2,2), 123, ['wolne'])
 visitor = Visitor.new("name", "survisit", "123")
 reservation.addVisitor(visitor)
+reservation.addVisitor(Visitor.new("name", "survisit", "124"))
 Order.createOrder(reservation,123)
 Order.createOrder(reservation,123)
-#Order.createOrder(reservation,123) more than 2x Visitors
+#Order.createOrder(reservation,123) #more than 2x Visitors
+
+#stat
+#Reservation.new(Time.new, Time.new(2017,2,2), 123, ['wolne'])
 
 puts
 puts
@@ -81,9 +90,6 @@ puts
 puts "#Wieloaspektowe"
 workerMale = Worker.new("name", "surname", male)
 workerFemale = Worker.new("Anna", "Kein", female)
-
-
-
 
 #dinamic
 worker = Worker.new('Bill', 'Clinton', male)
