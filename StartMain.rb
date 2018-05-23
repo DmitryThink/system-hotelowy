@@ -12,9 +12,10 @@ require './maid.rb'
 
 #Ograniczenie atrybutu
 klient = Klient.new("name", "surname", "phone")
-reservation = Reservation.new(Time.new, Time.new, 9999, ['wolne'], klient)
+reservation = Reservation.new(Time.new, Time.new, 9000, ['wolne'], 4500)
 reservation.setKlient(klient)
 #reservation.setPriceOfRoom(10000) ##exception > 9999
+#reservation.setPriceOfService(5000)
 
 #Unique
 bill = Klient.new("Bill", "Clinton", "1234")
@@ -25,7 +26,7 @@ anna = Klient.new("Anna", "Partinson", "1235")
 # Klient -> make -> reservation
 # Klient -> beVip -> reservation ^subset
 bill = Klient.new("Bill", "Clinton", "124")
-reservation = Reservation.new(Time.new, Time.new, 123, ['wolne'], bill)
+reservation = Reservation.new(Time.new, Time.new, 123, ['wolne'])
 reservation.setKlient(bill)
 bill.beVip(reservation)
 #reservation.setVip(klient)

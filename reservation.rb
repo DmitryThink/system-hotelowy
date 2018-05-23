@@ -2,7 +2,7 @@ class Reservation
   @@maxNumberOfReservations = 5
   @@extension = []
 
-  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = nil)
+  def initialize(dateFrom, dateTo, priceOfRoom, status, priceOfService = 0)
     if(@@maxNumberOfReservations < @@extension.length)
       throw "Can't be more than " + @@maxNumberOfReservations.to_s + " reservations!"
     end
@@ -12,7 +12,7 @@ class Reservation
     @dateFrom = dateFrom
     @dateTo = dateTo
     setPriceOfRoom(priceOfRoom)
-    @priceOfService = priceOfService
+    setPriceOfService(priceOfService)
     @status = status
     @visitors = Hash.new
     @reservation_rooms = []
@@ -241,6 +241,9 @@ class Reservation
     @priceOfService
   end
   def setPriceOfService(priceOfService)
+    if priceOfService * 2 > @priceOfRoom
+      throw "priceOfService can't be more than 1/2 priceOfRoom"
+    end
     @priceOfService = priceOfService
   end
   ###############################################################################################################################################
